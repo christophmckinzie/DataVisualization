@@ -6,7 +6,7 @@ df <- read.csv("fludata.csv")
 
 ui = fluidPage(
     # Application title
-    titlePanel("Flu Cases in New York"),
+    titlePanel("New York Flu Cases, 2009-2016"),
     # Sidebar with a 3 inputs 
     sidebarLayout(
         sidebarPanel(
@@ -18,24 +18,20 @@ ui = fluidPage(
                          choices = c(
                              "Both" = "INFLUENZA",
                              "Influenza_A" = "INFLUENZA_A",
-                             "Influenza_B" = "INFLUENZA_B"
-                         )),
+                             "Influenza_B" = "INFLUENZA_B")),
             radioButtons(inputId = "region",
                          label = "Region:",
-                         selected = NULL,
                          choices = c(
-                             "All" = "",
+                             "All" = "NYC|CAPITAL DISTRICT|WESTERN|CENTRAL|METRO",
                              "New York City" = "NYC",
-                             "Capital District" = "CAPITAL DISTRICT", 
+                             "Capital District" = "CAPITAL DISTRICT",
                              "Western" = "WESTERN",
                              "Central" = "CENTRAL",
-                             "Metro" = "METRO" 
-                         ))
+                             "Metro" = "METRO"))
         ),
         # Show plot and table
         mainPanel(
-            plotOutput("fluPlot")
-        )
+            plotOutput("fluPlot"))
     )
 )
 
@@ -44,8 +40,11 @@ server = function(input, output) {
 selections = reactive({
     req(input$season)
     req(input$type)
+    req(input$region)
     filter(df, season == input$season) %>%
-        filter(str_detect(disease, input$type)) %>% filter(str_detect(region, input$region))
+        filter(str_detect(disease, input$type)) %>% 
+        filter(grepl(input$region,region))
+    
         
 })
 
@@ -55,7 +54,7 @@ selections = reactive({
             labs(
                 title = "Title",
                 x = "CDC Week",
-                y = "count"
+                y = "Count"
             ) +
             scale_y_continuous(limits = c(0, 5000)) +
             theme(axis.text.x = element_text(angle = 45, hjust=1))
