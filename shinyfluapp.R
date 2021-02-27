@@ -6,7 +6,7 @@ df <- read.csv("fludata.csv")
 
 ui = fluidPage(
     # Application title
-    titlePanel("NYC Mortality by Race and Sex, 2007-2014"),
+    titlePanel("Flu Cases in New York"),
     # Sidebar with a 3 inputs 
     sidebarLayout(
         sidebarPanel(
@@ -54,7 +54,7 @@ selections = reactive({
             geom_bar(stat = 'identity', color = 'steelblue', fill = 'steelblue', fun = 'mean', width = 0.8) +
             labs(
                 title = "Title",
-                x = "season",
+                x = "CDC Week",
                 y = "count"
             ) +
             scale_y_continuous(limits = c(0, 5000)) +
